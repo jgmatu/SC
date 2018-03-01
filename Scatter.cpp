@@ -11,21 +11,24 @@ Scatter::~Scatter() {
 
 std::vector<Solucion*>
 Scatter::get_initial_solutions(Instancia* inst) {
-      std::vector<Solucion*> solutions(inst->size());
+      std::vector<Solucion*> solutions(NUM_INITIAL);
+      Random* random = new Random();
 
-      for (int i = 0 ; i < inst->size(); i++) {
-            Voraz voraz = Voraz(i);
-            solutions[i] = voraz.construction(inst);
+      for (int i = 0 ; i < NUM_INITIAL; i++) {
+            solutions[i] = random->construction(inst);
       }
+      delete random;
       return solutions;
 }
 
 Solucion*
 Scatter::construction(Instancia* inst) {
-      std::vector<Solucion*> mejores_soluciones; // Ordenados por distancias.
-      std::vector<Solucion*> peores_soluciones; // Ordenados por distancias.
       std::vector<Solucion*> initial_solutions = get_initial_solutions(inst);
-      Solucion* final_solution = initial_solutions[0];
+      // LocalSearch* search = new ExperimentSearch();
 
-      return final_solution;
+      // search->search(initial_solutions[0]);
+      for (int i = 0 ; i < NUM_INITIAL; i++) {
+            initial_solutions[i]->print_route();
+      }
+      return initial_solutions[0];
 }

@@ -7,14 +7,6 @@ Random::Random() {
 Random::~Random() {
 }
 
-int
-get_random(int i) {
-      std::random_device rd;  //Will be used to obtain a seed for the random number engine
-      std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-      std::uniform_int_distribution<> dis(1, 100);
-
-      return dis(gen);
-}
 
 Solucion* Random::construction(Instancia* inst) {
       Solucion* solucion = new Solucion(inst);

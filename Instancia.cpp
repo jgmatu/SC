@@ -27,9 +27,6 @@ Instancia::readFile(std::string filename) {
             if (numline >= METADATA && is_valid_vertex(line)) {
                   graph.push_back(get_vertex(line));
             }
-            if (line.find("NAME") != std::string::npos) {
-//                  std::cout << line << std::endl;
-            }
             numline++;
       }
       ifs.close();

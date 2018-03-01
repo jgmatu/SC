@@ -76,6 +76,22 @@ Solucion::insert(int idxPosition, int idxInsert) {
       route.insert(it + idxInsert, aux);
 }
 
+int
+Solucion::getNextMin(int idx) {
+      float dist = instancia->get_distance(idx, (idx + 1) % length);
+      int aux = idx;
+
+      for (int i = 1; i < length; i++) {
+            float nextDist = instancia->get_distance(aux, (aux + 1) % length);
+
+            if (nextDist < dist) {
+                  return aux;
+            }
+            aux = (idx + i) % length;
+      }
+      return -1;
+}
+
 void
 Solucion::print_route()
 {

@@ -17,36 +17,20 @@ Instancia* loadInstance(std::string filename) {
 
       instancia->readFile(filename);
       instancia->calc_distances();
-      instancia->print_distances();
       return instancia;
 }
 
 
 // Recorrerse el directorio de ficheros tsp.
-int main () {
-      Instancia* instancia = loadInstance("graphs/example.tsp");
+int main() {
+      Instancia* instancia = loadInstance("graphs/pr76.tsp");
       Scatter* scatter = new Scatter();
       Solucion* solucion = scatter->construction(instancia);
-
-
-      std::cout << "Total Distance : " << solucion->eval() << std::endl;
-      solucion->print_route();
-      solucion->insert(4, 1);
-      solucion->insert(3, 4);
-      solucion->insert(4, 1);
-      solucion->insert(0, 2);
-      solucion->insert(1, 5);
-      solucion->insert(5, 1);
-      solucion->insert(0, 3);
-      solucion->insert(3, 0);
-      solucion->insert(1, 4);
-
-      solucion->swap(1, 2),
-      solucion->print_route();
 
       delete solucion;
       delete instancia;
       delete scatter;
+      return 0;
 }
 
 // Clase instancia.
@@ -95,3 +79,11 @@ int main () {
 
 // Grafo demo de 10 para calcular las distancias y ver que la matriz de distancias la estamos generando bien.
 // Crear la clase slución que genera una solución al azar de la instancia dada...
+
+
+// Resultado final :
+//      F. O.     Time : Toda la iteración de la metaurística.
+
+//    tsp1  .....
+//    tsp2  .....
+//    tsp3  .....

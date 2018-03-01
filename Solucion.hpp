@@ -27,6 +27,9 @@ public:
       void swap(int idNodeA, int idNodeB);
       void print_route();
       bool is_out_range(int idx);
+      int size() { return route.size(); };
+      int getNextMin(int idx);
+
 
 private:
 
