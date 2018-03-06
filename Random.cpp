@@ -1,7 +1,7 @@
 #include "Random.hpp"
 
 Random::Random() {
-      ;
+      std::srand(time(0));
 }
 
 Random::~Random() {
@@ -12,7 +12,6 @@ Solucion* Random::construction(Instancia* inst) {
       Solucion* solucion = new Solucion(inst);
       std::vector<int> indexes = get_indexes(inst->size());
 
-      std::srand(time(0));
       std::random_shuffle(indexes.begin(), indexes.end());
       for (unsigned int i = 0; i < indexes.size(); i++) {
             solucion->add(i, indexes[i]);

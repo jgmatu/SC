@@ -29,7 +29,7 @@ public:
       bool is_out_range(int idx);
       int size() { return route.size(); };
       int getNextMin(int idx);
-
+      int getNode(int idx) { return route[idx]; };
 
 private:
 

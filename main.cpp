@@ -20,10 +20,9 @@ Instancia* loadInstance(std::string filename) {
       return instancia;
 }
 
-
 // Recorrerse el directorio de ficheros tsp.
 int main() {
-      Instancia* instancia = loadInstance("graphs/pr76.tsp");
+      Instancia* instancia = loadInstance("graphs/example.tsp");
       Scatter* scatter = new Scatter();
       Solucion* solucion = scatter->construction(instancia);
 
