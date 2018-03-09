@@ -1,7 +1,7 @@
 #include "ExperimentSearch.hpp"
 
 ExperimentSearch::ExperimentSearch() {
-      std::srand (time(0));
+      ;
 }
 
 ExperimentSearch::~ExperimentSearch() {

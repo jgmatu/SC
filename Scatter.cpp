@@ -5,6 +5,7 @@ Scatter::Scatter() {
       ;
 }
 
+
 Scatter::~Scatter() {
       ;
 }
@@ -14,12 +15,12 @@ bool solution_sort_criteria (Solucion* sol1, Solucion* sol2) {
 }
 
 std::vector<Solucion*>
-Scatter::get_initial_solutions(Instancia* inst) {
+Scatter::get_initial_solutions(Instancia* instance) {
       std::vector<Solucion*> solutions(NUM_INITIAL);
       Random* random = new Random();
 
-      for (int i = 0; i < NUM_INITIAL; i++) {
-            solutions[i] = random->construction(inst);
+      for (int i = 0; i < NUM_INITIAL; ++i) {
+            solutions[i] = random->construction(instance);
       }
       std::sort(solutions.begin(), solutions.end(), solution_sort_criteria);
 
@@ -39,19 +40,9 @@ Scatter::set_best_solutions(std::vector<Solucion*>& initials, std::vector<Soluci
       initials.erase(first, last);
 }
 
-float
-Scatter::get_distance(Solucion* initial, Solucion* refset) {
-      float total = 0;
-
-      for (unsigned int i = 0; i < initial->size(); i++) {
-            total += fabs(initial->getNode(i) - refset->getNode(i));
-      }
-      return total;
-}
-
 void
 Scatter::set_diverses_solutions(std::vector<Solucion*>& initial, std::vector<Solucion*>& refSet) {
-      for (unsigned int i = 0; i < NUM_DIV; ++i) {
+      for (unsigned int i = 0; i < NUM_DIVERSE; ++i) {
             float max = FLT_MIN;
             int idx = -1;
 
@@ -59,7 +50,7 @@ Scatter::set_diverses_solutions(std::vector<Solucion*>& initial, std::vector<Sol
                   float min = FLT_MAX;
 
                   for (unsigned int k = 0; k < refSet.size(); ++k) {
-                        float distance = get_distance(initial[j], refSet[k]);
+                        float distance = initial[j]->diverse_distance(refSet[k]);
 
                         if (distance < min) {
                               min = distance;
@@ -77,6 +68,26 @@ Scatter::set_diverses_solutions(std::vector<Solucion*>& initial, std::vector<Sol
       }
 }
 
+
+void
+Scatter::change_refset(std::vector<Solucion*>& refSet, Solucion* solution) {
+      float eval = solution->eval();
+      float min = FLT_MAX;
+      int idx = -1;
+
+      for (unsigned int i = 0; i < refSet.size(); i++) {
+            float dist = fabs(refSet[i]->eval() - eval);
+            if (dist < min) {
+                  min = dist;
+                  idx = i;
+            }
+      }
+      if (idx != -1) {
+            delete refSet[idx];
+            refSet[idx] = solution;
+      }
+}
+
 Solucion*
 Scatter::construction(Instancia* inst) {
       std::vector<Solucion*> initials = get_initial_solutions(inst);
@@ -85,11 +96,17 @@ Scatter::construction(Instancia* inst) {
       set_best_solutions(initials, refSet);
       set_diverses_solutions(initials, refSet);
 
-      // LocalSearch* search = new ExperimentSearch();
-      // search->search(initial_solutions[0]);
-      
-      if (NUM_INITIAL > 0) {
-            return initials[0];
+      ExperimentSearch* search = new ExperimentSearch();
+      for (unsigned int i = 0; i < refSet.size(); ++i) {
+            for (unsigned int j = 0; j < refSet.size(); ++j) {
+                  Solucion* voted = refSet[i]->vote(refSet[j]);
+                  search->search(voted);
+//                  change_refset(refSet, voted);
+                  delete voted;
+            }
       }
-      return new Solucion(inst);
+      if (NUM_INITIAL == 0) {
+            return new Solucion(inst);
+      }
+      return initials[0];
 }

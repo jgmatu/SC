@@ -22,6 +22,8 @@ Instancia* loadInstance(std::string filename) {
 
 // Recorrerse el directorio de ficheros tsp.
 int main() {
+      std::srand ( unsigned ( std::time(0) ) ); // Intialize pseudo random secuence...
+
       Instancia* instancia = loadInstance("graphs/example.tsp");
       Scatter* scatter = new Scatter();
       Solucion* solucion = scatter->construction(instancia);

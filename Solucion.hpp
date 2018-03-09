@@ -29,13 +29,17 @@ public:
       bool is_out_range(int idx);
       int size() { return route.size(); };
       int getNextMin(int idx);
-      int getNode(int idx) { return route[idx]; };
+      Solucion* vote(Solucion* sol);
+      float diverse_distance(Solucion* sol);
 
 private:
 
       Instancia* instancia;
       std::vector<int> route;
       int length;
+      const int COIN_FACES = 2;
+      const int FACE = 1;
+      const int CROSS = 0;
 
 };
 #endif
