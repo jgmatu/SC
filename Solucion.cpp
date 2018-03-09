@@ -111,22 +111,24 @@ Solucion::vote(Solucion* sol) {
       for (unsigned int i = 0; i < sol->size(); i++) {
             int face = std::rand() % COIN_FACES;
 
+            fprintf(stderr, "%d\n", face);
             if (face == FACE && !voted->exist(this->route[i])) {
                   voted->route[i] = this->route[i];
             } else {
                   voted->route[i] = sol->route[i];
             }
       }
-/*
+
       std::cout << "This : " << ' ';
       this->print_route();
       std::cout << "Solution : " << ' ';
       sol->print_route();
+      std::cout << "Voted : " << ' ';
       for (unsigned int i = 0; i < voted->size(); i++) {
             std::cout << voted->route[i] << ' ';
       }
       std::cout << '\n';
-*/
+
       return voted;
 }
 

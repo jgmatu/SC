@@ -7,6 +7,7 @@
 class Constructivas {
 
 public:
+      
       virtual ~Constructivas() {
             ;
       }
