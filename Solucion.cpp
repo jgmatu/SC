@@ -103,37 +103,76 @@ Solucion::diverse_distance(Solucion* sol) {
       return total;
 }
 
+std::vector<int>
+Solucion::init_count() const {
+      std::vector<int> init(length);
 
-Solucion*
-Solucion::vote(Solucion* sol) {
-      Solucion* voted = new Solucion(instancia);
+      for (int i = 0; i < length; ++i) {
+            init[i] = 0;
+      }
+      return init;
+}
 
-      for (unsigned int i = 0; i < sol->size(); i++) {
-            int face = std::rand() % COIN_FACES;
-
-            fprintf(stderr, "%d\n", face);
-            if (face == FACE && !voted->exist(this->route[i])) {
-                  voted->route[i] = this->route[i];
-            } else {
-                  voted->route[i] = sol->route[i];
+unsigned int
+Solucion::get_node_not_used(std::vector<int> count) const {
+      for (unsigned int i = 0; i < length; i++) {
+            if (count[i] == NOT_USED) {
+                  return i;
             }
       }
+      return 0;
+}
 
-      std::cout << "This : " << ' ';
-      this->print_route();
-      std::cout << "Solution : " << ' ';
-      sol->print_route();
-      std::cout << "Voted : " << ' ';
-      for (unsigned int i = 0; i < voted->size(); i++) {
-            std::cout << voted->route[i] << ' ';
+
+bool mypredicate (int i, int j) {
+  return i == j;
+}
+
+//bool
+//equals(Solucion* sol) {
+//      return std::equal(this->route.begin(), this->route.end(), sol->route, mypredicate);
+//}
+
+
+Solucion*
+Solucion::vote(Solucion* sol) const {
+      Solucion* voted = new Solucion(instancia);
+      std::vector<int> count = init_count();
+
+      for (unsigned int i = 0; i < length; i++) {
+            int face = std::rand() % COIN_FACES;
+            
+            if (face == FACE)  {
+                  if (!voted->exist(this->route[i])) {
+                        voted->route[i] = this->route[i];
+                        count[sol->route[i]]++;
+                  } else if (!voted->exist(sol->route[i])) {
+                        voted->route[i] = sol->route[i];
+                        count[this->route[i]]++;
+                  } else {
+                        int idNode = get_node_not_used(count);
+                        voted->route[i] = idNode;
+                        count[idNode] = 0;
+                  }
+            } else {
+                  if (!voted->exist(sol->route[i])) {
+                        voted->route[i] = sol->route[i];
+                        count[this->route[i]]++;
+                  } else if (!voted->exist(this->route[i])) {
+                        voted->route[i] = this->route[i];
+                        count[sol->route[i]]++;
+                  } else {
+                        int idNode = get_node_not_used(count);
+                        voted->route[i] = idNode;
+                        count[idNode] = 0;
+                  }
+            }
       }
-      std::cout << '\n';
-
       return voted;
 }
 
 void
-Solucion::print_route()
+Solucion::print_route() const
 {
       for (int i = 0; i < length; i++) {
             std::cout << route[i] << ' ';

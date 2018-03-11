@@ -99,8 +99,9 @@ Scatter::construction(Instancia* inst) {
       ExperimentSearch* search = new ExperimentSearch();
       for (unsigned int i = 0; i < refSet.size(); ++i) {
             for (unsigned int j = 0; j < refSet.size(); ++j) {
+//                  if (refSet[i])
                   Solucion* voted = refSet[i]->vote(refSet[j]);
-                  search->search(voted);
+//                  search->search(voted);
 //                  change_refset(refSet, voted);
                   delete voted;
             }

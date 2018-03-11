@@ -25,14 +25,18 @@ public:
       bool exist(int idNode);
       void insert(int idNode, int idx);
       void swap(int idNodeA, int idNodeB);
-      void print_route();
+      void print_route() const;
       bool is_out_range(int idx);
       int size() { return route.size(); };
       int getNextMin(int idx);
-      Solucion* vote(Solucion* sol);
+      Solucion* vote(Solucion* sol) const;
       float diverse_distance(Solucion* sol);
 
 private:
+
+      unsigned int get_node_not_used(std::vector<int> count) const;
+      std::vector<int> init_count() const;
+
 
       Instancia* instancia;
       std::vector<int> route;
@@ -40,6 +44,7 @@ private:
       const int COIN_FACES = 2;
       const int FACE = 1;
       const int CROSS = 0;
+      const int NOT_USED = 2;
 
 };
 #endif
