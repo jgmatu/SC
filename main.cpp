@@ -7,6 +7,7 @@
 #include <iterator>
 #include <math.h>
 #include <random>
+#include <ctime>
 
 #include "Instancia.hpp"
 #include "Solucion.hpp"
@@ -14,11 +15,11 @@
 
 // Recorrerse el directorio de ficheros tsp.
 int main() {
-//       std::srand ( unsigned ( std::time(0) ) ); // Intialize pseudo random sequence...
-      std::srand ( 13 ); // Intialize pseudo random sequence...
+       std::srand ( unsigned ( std::time(0) ) ); // Intialize pseudo random sequence...
+//      std::srand ( 13 ); // Intialize pseudo random sequence...
 
       Instancia* instancia = new Instancia();
-      instancia->readFile("graphs/pr152.tsp");
+      instancia->readFile("graphs/eil51.tsp");
       instancia->calc_distances();
 
       Scatter* scatter = new Scatter();

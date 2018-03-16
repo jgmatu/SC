@@ -138,11 +138,24 @@ Solucion::init_used(unsigned int size) const {
       return init;
 }
 
+std::vector<int>
+Solucion::get_indexes(int size) const {
+      std::vector<int> indexes(size);
+
+      for (unsigned int i = 0; i < indexes.size(); i++) {
+            indexes[i] = i;
+      }
+      return indexes;
+}
+
 int
-get_node_not_used(std::vector<bool> used) {
+Solucion::get_node_not_used(std::vector<bool> used) const {
+      std::vector<int> indexes = get_indexes((int) used.size());
+
+      std::random_shuffle(indexes.begin(), indexes.end());
       for (unsigned int i = 0; i < used.size(); i++) {
-            if (!used[i]) {
-                  return i;
+            if (!used[indexes[i]]) {
+                  return indexes[i];
             }
       }
       return -1; // Not possible value...

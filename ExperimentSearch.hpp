@@ -4,8 +4,9 @@
 #include "LocalSearch.hpp"
 #include "Solucion.hpp"
 #include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
 #include <float.h>
+#include <algorithm>  // for random_shuffle http://cplusplus.com/reference/algorithm/random_shuffle/
+
 
 class ExperimentSearch : public LocalSearch {
 
@@ -18,7 +19,6 @@ public:
 private:
 
       const int MAX_ITERATES = 1000;
-
       std::vector<int> get_indexes(int size);
 };
 

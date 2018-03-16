@@ -10,6 +10,7 @@
 #include <iterator>
 #include <math.h>
 #include <random>
+#include <algorithm>  // for random_shuffle http://cplusplus.com/reference/algorithm/random_shuffle/
 #include "Instancia.hpp"
 
 class Solucion {
@@ -26,7 +27,6 @@ public:
       void insert(int idNode, int idx);
       void swap(int idNodeA, int idNodeB);
       void print_route() const;
-      bool is_out_range(int idx);
       int size() { return route.size(); };
       int getNextMin(int idx);
       Solucion* vote(Solucion* sol) const;
@@ -35,11 +35,15 @@ public:
 
 private:
 
-      std::vector<bool> init_used(unsigned int size) const ;
+      int get_node_not_used(std::vector<bool> used) const;
+      std::vector<bool> init_used(unsigned int size) const;
+      std::vector<int> get_indexes(int size) const;
+      bool is_out_range(int idx);
 
       Instancia* instancia;
       std::vector<int> route;
       int length;
+
       const int COIN_FACES = 2;
       const int FACE = 1;
       const int CROSS = 0;
