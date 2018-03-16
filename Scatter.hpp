@@ -33,8 +33,7 @@ private:
       void set_diverses_solutions(std::vector<Solucion*>& initial, std::vector<Solucion*>& refSet);
       float get_distance(Solucion* initial, Solucion* best);
       Solucion* get_vote(Solucion* sol1, Solucion* sol2);
-      void change_refset(std::vector<Solucion*>& refSet, Solucion* solution);
-
+      bool change_refset(std::vector<Solucion*>& refSet, Solucion* solution);
 
 };
 

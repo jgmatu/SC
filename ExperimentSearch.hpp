@@ -13,7 +13,7 @@ public:
 
       ExperimentSearch();
       ~ExperimentSearch();
-      void search(Solucion* solucion);
+      void search(Solucion** solucion);
 
 private:
 

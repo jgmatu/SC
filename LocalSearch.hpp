@@ -11,7 +11,7 @@ public:
       virtual ~LocalSearch() {
             ;
       }
-      virtual void search(Solucion* s) = 0;
+      virtual void search(Solucion** s) = 0;
 
 };
 #endif

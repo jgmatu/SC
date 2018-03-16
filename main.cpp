@@ -12,21 +12,20 @@
 #include "Solucion.hpp"
 #include "Scatter.hpp"
 
-Instancia* loadInstance(std::string filename) {
-      Instancia* instancia = new Instancia();
-
-      instancia->readFile(filename);
-      instancia->calc_distances();
-      return instancia;
-}
-
 // Recorrerse el directorio de ficheros tsp.
 int main() {
-      std::srand ( unsigned ( std::time(0) ) ); // Intialize pseudo random secuence...
+//       std::srand ( unsigned ( std::time(0) ) ); // Intialize pseudo random sequence...
+      std::srand ( 13 ); // Intialize pseudo random sequence...
 
-      Instancia* instancia = loadInstance("graphs/example.tsp");
+      Instancia* instancia = new Instancia();
+      instancia->readFile("graphs/pr152.tsp");
+      instancia->calc_distances();
+
       Scatter* scatter = new Scatter();
       Solucion* solucion = scatter->construction(instancia);
+
+      std::cout << "Eval route : " << solucion->eval() << '\n';
+      solucion->print_route();
 
       delete solucion;
       delete instancia;

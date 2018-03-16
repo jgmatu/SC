@@ -14,6 +14,17 @@ Solucion::~Solucion() {
       route.clear();
 }
 
+Solucion*
+Solucion::copy()
+{
+      Solucion* copy = new Solucion(instancia);
+
+      for (unsigned int i = 0; i < this->route.size(); ++i) {
+            copy->route[i] = this->route[i];
+      }
+      return copy;
+}
+
 void
 Solucion::add(int idNode, int idx) {
       route[idx] = idNode;
@@ -41,6 +52,7 @@ Solucion::eval() {
       for (int i = 0; i < length; i++) {
             int first = i % length;
             int second = (i + 1) % length;
+
             total += instancia->get_distance(route[first], route[second]);
       }
       return total;
@@ -89,7 +101,7 @@ Solucion::getNextMin(int idx) {
             }
             aux = (idx + i) % length;
       }
-      return -1;
+      return -1; // No deberia entrar nunca....
 }
 
 
@@ -97,35 +109,17 @@ float
 Solucion::diverse_distance(Solucion* sol) {
       float total = 0;
 
-      for (unsigned int i = 0; i < sol->size(); i++) {
-            total += fabs(sol->route[i] - this->route[i]);
+      for (int i = 0; i < sol->size(); i++) {
+            if (sol->route[i] != this->route[i]) {
+                  total = total + 1.0f;
+            }
       }
       return total;
 }
 
-std::vector<int>
-Solucion::init_count() const {
-      std::vector<int> init(length);
-
-      for (int i = 0; i < length; ++i) {
-            init[i] = 0;
-      }
-      return init;
-}
-
-unsigned int
-Solucion::get_node_not_used(std::vector<int> count) const {
-      for (unsigned int i = 0; i < length; i++) {
-            if (count[i] == NOT_USED) {
-                  return i;
-            }
-      }
-      return 0;
-}
-
 
 bool mypredicate (int i, int j) {
-  return i == j;
+      return i == j;
 }
 
 //bool
@@ -134,37 +128,57 @@ bool mypredicate (int i, int j) {
 //}
 
 
+std::vector<bool>
+Solucion::init_used(unsigned int size) const {
+      std::vector<bool> init(size);
+
+      for (unsigned int i = 0; i < size; i++) {
+            init[i] = false;
+      }
+      return init;
+}
+
+int
+get_node_not_used(std::vector<bool> used) {
+      for (unsigned int i = 0; i < used.size(); i++) {
+            if (!used[i]) {
+                  return i;
+            }
+      }
+      return -1; // Not possible value...
+}
+
 Solucion*
 Solucion::vote(Solucion* sol) const {
       Solucion* voted = new Solucion(instancia);
-      std::vector<int> count = init_count();
+      std::vector<bool> used = init_used(voted->size());
 
-      for (unsigned int i = 0; i < length; i++) {
-            int face = std::rand() % COIN_FACES;
-            
-            if (face == FACE)  {
+      for (int i = 0; i < length; i++) {
+            int coin = std::rand() % COIN_FACES;
+
+            if (coin == FACE)  {
                   if (!voted->exist(this->route[i])) {
                         voted->route[i] = this->route[i];
-                        count[sol->route[i]]++;
+                        used[this->route[i]] = true;
                   } else if (!voted->exist(sol->route[i])) {
                         voted->route[i] = sol->route[i];
-                        count[this->route[i]]++;
+                        used[sol->route[i]] = true;
                   } else {
-                        int idNode = get_node_not_used(count);
+                        int idNode = get_node_not_used(used);
                         voted->route[i] = idNode;
-                        count[idNode] = 0;
+                        used[idNode] = true;
                   }
             } else {
                   if (!voted->exist(sol->route[i])) {
                         voted->route[i] = sol->route[i];
-                        count[this->route[i]]++;
+                        used[sol->route[i]] = true;
                   } else if (!voted->exist(this->route[i])) {
                         voted->route[i] = this->route[i];
-                        count[sol->route[i]]++;
+                        used[this->route[i]] = true;
                   } else {
-                        int idNode = get_node_not_used(count);
+                        int idNode = get_node_not_used(used);
                         voted->route[i] = idNode;
-                        count[idNode] = 0;
+                        used[idNode] = true;
                   }
             }
       }

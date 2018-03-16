@@ -31,12 +31,11 @@ public:
       int getNextMin(int idx);
       Solucion* vote(Solucion* sol) const;
       float diverse_distance(Solucion* sol);
+      Solucion* copy();
 
 private:
 
-      unsigned int get_node_not_used(std::vector<int> count) const;
-      std::vector<int> init_count() const;
-
+      std::vector<bool> init_used(unsigned int size) const ;
 
       Instancia* instancia;
       std::vector<int> route;
@@ -44,7 +43,6 @@ private:
       const int COIN_FACES = 2;
       const int FACE = 1;
       const int CROSS = 0;
-      const int NOT_USED = 2;
 
 };
 #endif

@@ -10,7 +10,7 @@ Scatter::~Scatter() {
       ;
 }
 
-bool solution_sort_criteria (Solucion* sol1, Solucion* sol2) {
+bool solution_sort_criteria(Solucion* sol1, Solucion* sol2) {
       return sol1->eval() < sol2->eval();
 }
 
@@ -24,6 +24,22 @@ Scatter::get_initial_solutions(Instancia* instance) {
       }
       std::sort(solutions.begin(), solutions.end(), solution_sort_criteria);
 
+      std::cout << "Mejor solucion aleatoria: " << solutions[0]->eval() << '\n';
+      solutions[0]->print_route();
+
+      ExperimentSearch* search = new ExperimentSearch();
+      std::vector<Solucion*> local_solutions(NUM_INITIAL);
+      for (unsigned int i = 0; i < solutions.size(); ++i) {
+            local_solutions[i] = solutions[i]->copy();
+            search->search(&local_solutions[i]);
+      }
+
+      std::cout << "Ordenando las soluciones locales: " << '\n';
+      std::sort(local_solutions.begin(), local_solutions.end(), solution_sort_criteria);
+      std::cout << "Mejor solución Local: " << '\n';
+      std::cout << local_solutions[0]->eval() << '\n';
+
+      delete search;
       delete random;
       return solutions;
 }
@@ -42,7 +58,7 @@ Scatter::set_best_solutions(std::vector<Solucion*>& initials, std::vector<Soluci
 
 void
 Scatter::set_diverses_solutions(std::vector<Solucion*>& initial, std::vector<Solucion*>& refSet) {
-      for (unsigned int i = 0; i < NUM_DIVERSE; ++i) {
+      for (int i = 0; i < NUM_DIVERSE; ++i) {
             float max = FLT_MIN;
             int idx = -1;
 
@@ -61,53 +77,67 @@ Scatter::set_diverses_solutions(std::vector<Solucion*>& initial, std::vector<Sol
                         max = min;
                   }
             }
-            if (idx >= 0) {
+            if (idx != -1) {
                   refSet.insert(refSet.end(), initial[idx]);
                   initial.erase(initial.begin() + idx);
             }
       }
 }
 
-
-void
+bool
 Scatter::change_refset(std::vector<Solucion*>& refSet, Solucion* solution) {
       float eval = solution->eval();
       float min = FLT_MAX;
       int idx = -1;
+      bool changed = false;
 
       for (unsigned int i = 0; i < refSet.size(); i++) {
-            float dist = fabs(refSet[i]->eval() - eval);
+            float dist = refSet[i]->diverse_distance(solution);
+
             if (dist < min) {
-                  min = dist;
-                  idx = i;
+                  if (eval < refSet[i]->eval()) {
+                        min = dist;
+                        idx = i;
+                  }
             }
       }
       if (idx != -1) {
             delete refSet[idx];
             refSet[idx] = solution;
+            changed = true;
+      } else {
+            delete solution;
       }
+      solution = NULL;
+      std::sort(refSet.begin(), refSet.end(), solution_sort_criteria);
+      return changed;
 }
 
 Solucion*
 Scatter::construction(Instancia* inst) {
       std::vector<Solucion*> initials = get_initial_solutions(inst);
-      std::vector<Solucion*> refSet;
+      std::vector<Solucion*> refSet = initials;
+      ExperimentSearch* search = new ExperimentSearch();
+      int numChanged = -1;
 
       set_best_solutions(initials, refSet);
       set_diverses_solutions(initials, refSet);
 
-      ExperimentSearch* search = new ExperimentSearch();
-      for (unsigned int i = 0; i < refSet.size(); ++i) {
-            for (unsigned int j = 0; j < refSet.size(); ++j) {
-//                  if (refSet[i])
-                  Solucion* voted = refSet[i]->vote(refSet[j]);
-//                  search->search(voted);
-//                  change_refset(refSet, voted);
-                  delete voted;
+      do {
+            numChanged = 0;
+            for (unsigned int i = 0; i < refSet.size(); ++i) {
+                  for (unsigned int j = 0; j < refSet.size(); ++j) {
+                        if (refSet[i] == refSet[j]) {
+                              continue;
+                        }
+                        Solucion* voted = refSet[i]->vote(refSet[j]);
+                        search->search(&voted);
+                        if (change_refset(refSet, voted)) {
+                              numChanged++;
+                        }
+                  }
             }
-      }
-      if (NUM_INITIAL == 0) {
-            return new Solucion(inst);
-      }
-      return initials[0];
+      } while (numChanged > 0);
+      delete search;
+      return refSet[0];
 }
