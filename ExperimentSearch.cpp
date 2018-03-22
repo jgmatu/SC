@@ -19,34 +19,28 @@ ExperimentSearch::get_indexes(int size) {
       return indexes;
 }
 
-
-
 void
-ExperimentSearch::search(Solucion** result) {
-      bool improve;
-      Solucion* solucion = *result;
+ExperimentSearch::search(Solucion* solucion) {
       std::vector<int> indexesI = get_indexes(solucion->size());
       std::vector<int> indexesJ = get_indexes(solucion->size());
+      bool improve;
 
       do {
             improve = false;
             std::random_shuffle(indexesI.begin(), indexesI.end());
-            for (int i = 0; i < solucion->size(); ++i) {
+            for (int i = 0; i < solucion->size() / 2 && !improve; ++i) {
                   std::random_shuffle(indexesJ.begin(), indexesJ.end());
-                  for (int j = i + 1; j < solucion->size(); ++j) {
-                        Solucion* aux = solucion->copy();
-                        aux->swap(indexesI[i], indexesJ[j]);
+                  for (int j = i + 1; j < solucion->size() / 2 && !improve; ++j) {
+                        float eval = solucion->eval();
 
-                        if (aux->eval() < solucion->eval()) {
-                              delete solucion;
-                              solucion = aux;
-                              *result = solucion;
-                              improve = true;
+                        solucion->swap(indexesI[i], indexesJ[j]);
+                        if (solucion->eval() >= eval) {
+                              solucion->swap(indexesJ[j], indexesI[i]);
                         } else {
-                              delete aux;
+                              improve = true;
                         }
-                        aux = NULL;
                   }
             }
       } while (improve);
+      // std::cout << solucion->eval() << '\n';
 }

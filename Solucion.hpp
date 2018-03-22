@@ -22,16 +22,18 @@ public:
 
       void add(int idNode, int idx);
       void remove(int idx);
-      float eval();
+      float eval() const;
       bool exist(int idNode);
       void insert(int idNode, int idx);
       void swap(int idNodeA, int idNodeB);
-      void print_route() const;
       int size() { return route.size(); };
       int getNextMin(int idx);
       Solucion* vote(Solucion* sol) const;
       float diverse_distance(Solucion* sol);
       Solucion* copy();
+
+
+      friend std::ostream& operator<<(std::ostream& os, const Solucion& sol);
 
 private:
 
@@ -39,6 +41,7 @@ private:
       std::vector<bool> init_used(unsigned int size) const;
       std::vector<int> get_indexes(int size) const;
       bool is_out_range(int idx);
+
 
       Instancia* instancia;
       std::vector<int> route;

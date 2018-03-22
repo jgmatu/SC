@@ -96,3 +96,7 @@ std::map<int, float>
 Instancia::get_column(int idNode) {
       return distances[idNode];
 }
+
+std::ostream& operator<<(std::ostream& os, const Instancia& inst) {
+      return os << inst.name;
+}

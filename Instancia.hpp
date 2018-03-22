@@ -24,9 +24,10 @@ public:
       int size() { return distances.size(); };
 
       float get_distance(int first, int second);
-
       std::map<int, float> get_column(int idNode);
-            
+
+      friend std::ostream& operator<<(std::ostream& os, const Instancia& inst);
+
 private:
 
       const int METADATA = 6;
@@ -37,6 +38,7 @@ private:
 
       std::vector<float> get_vertex(const std::string& line);
       bool is_valid_vertex(const std::string& line);
+
 };
 
 #endif

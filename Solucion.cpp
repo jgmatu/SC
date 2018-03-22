@@ -46,15 +46,21 @@ Solucion::exist(int idNode) {
 }
 
 float
-Solucion::eval() {
+Solucion::eval() const {
       float total = 0;
 
       for (int i = 0; i < length; i++) {
             int first = i % length;
             int second = (i + 1) % length;
+            float distance = instancia->get_distance(route[first], route[second]);;
 
-            total += instancia->get_distance(route[first], route[second]);
+            std::cout << distance << ',';
+
+            total += distance;
       }
+      std::cout << "--------------------------------------" << '\n';
+      std::cout << "Total : " << total << '\n';
+      std::cout << "--------------------------------------" << '\n';
       return total;
 }
 
@@ -116,17 +122,6 @@ Solucion::diverse_distance(Solucion* sol) {
       }
       return total;
 }
-
-
-bool mypredicate (int i, int j) {
-      return i == j;
-}
-
-//bool
-//equals(Solucion* sol) {
-//      return std::equal(this->route.begin(), this->route.end(), sol->route, mypredicate);
-//}
-
 
 std::vector<bool>
 Solucion::init_used(unsigned int size) const {
@@ -198,11 +193,10 @@ Solucion::vote(Solucion* sol) const {
       return voted;
 }
 
-void
-Solucion::print_route() const
-{
-      for (int i = 0; i < length; i++) {
-            std::cout << route[i] << ' ';
+std::ostream& operator<<(std::ostream& os, const Solucion& sol) {
+      os << sol.eval();
+      for (int i = 0; i < sol.length; i++) {
+            os << sol.route[i] << ' ';
       }
-      std::cout << std::endl;
+      return os;
 }

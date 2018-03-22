@@ -24,22 +24,6 @@ Scatter::get_initial_solutions(Instancia* instance) {
       }
       std::sort(solutions.begin(), solutions.end(), solution_sort_criteria);
 
-      std::cout << "Mejor solucion aleatoria: " << solutions[0]->eval() << '\n';
-      solutions[0]->print_route();
-
-      ExperimentSearch* search = new ExperimentSearch();
-      std::vector<Solucion*> local_solutions(NUM_INITIAL);
-      for (unsigned int i = 0; i < solutions.size(); ++i) {
-            local_solutions[i] = solutions[i]->copy();
-            search->search(&local_solutions[i]);
-      }
-
-      std::cout << "Ordenando las soluciones locales: " << '\n';
-      std::sort(local_solutions.begin(), local_solutions.end(), solution_sort_criteria);
-      std::cout << "Mejor solución Local: " << '\n';
-      std::cout << local_solutions[0]->eval() << '\n';
-
-      delete search;
       delete random;
       return solutions;
 }
@@ -84,15 +68,32 @@ Scatter::set_diverses_solutions(std::vector<Solucion*>& initial, std::vector<Sol
       }
 }
 
+float
+Scatter::avg(std::vector<Solucion*> refSet) {
+      float total = 0;
+
+      for (unsigned int i = 0; i < refSet.size(); ++i) {
+            total += refSet[i]->eval();
+      }
+      return total / refSet.size();
+}
+
 bool
 Scatter::change_refset(std::vector<Solucion*>& refSet, Solucion* solution) {
       float eval = solution->eval();
       float min = FLT_MAX;
       int idx = -1;
       bool changed = false;
+      float mean = avg(refSet);
 
       for (unsigned int i = 0; i < refSet.size(); i++) {
             float dist = refSet[i]->diverse_distance(solution);
+
+            if (refSet[i]->eval() > mean && eval < refSet[i]->eval()) {
+                  delete refSet[i];
+                  refSet[i] = solution;
+                  return true;
+            }
 
             if (dist < min) {
                   if (eval < refSet[i]->eval()) {
@@ -101,6 +102,7 @@ Scatter::change_refset(std::vector<Solucion*>& refSet, Solucion* solution) {
                   }
             }
       }
+
       if (idx != -1) {
             delete refSet[idx];
             refSet[idx] = solution;
@@ -120,9 +122,16 @@ Scatter::construction(Instancia* inst) {
       ExperimentSearch* search = new ExperimentSearch();
       int numChanged = -1;
 
+/*
       set_best_solutions(initials, refSet);
       set_diverses_solutions(initials, refSet);
 
+      for (unsigned int i = 0; i < initials.size(); i++) {
+            std::cout << initials[i]->eval() << ' ';
+      }
+      std::cout << '\n';
+
+      int count = 0;
       do {
             numChanged = 0;
             for (unsigned int i = 0; i < refSet.size(); ++i) {
@@ -131,13 +140,17 @@ Scatter::construction(Instancia* inst) {
                               continue;
                         }
                         Solucion* voted = refSet[i]->vote(refSet[j]);
-                        search->search(&voted);
-                        if (change_refset(refSet, voted)) {
+                        search->search(voted);
+                        bool changed = change_refset(refSet, voted);
+                        if (changed) {
                               numChanged++;
+//                              std::cout << voted->eval() << ' ' << count << '\n';
                         }
+                        count++;
                   }
             }
       } while (numChanged > 0);
       delete search;
+*/
       return refSet[0];
 }

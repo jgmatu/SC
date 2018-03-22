@@ -8,29 +8,63 @@
 #include <math.h>
 #include <random>
 #include <ctime>
+#include <dirent.h>
+#include <sys/types.h>
+
 
 #include "Instancia.hpp"
 #include "Solucion.hpp"
 #include "Scatter.hpp"
+#include <time.h>
+#include <string.h>
+#include <errno.h>
+
+#define MAX_PATH 255
 
 // Recorrerse el directorio de ficheros tsp.
 int main() {
-       std::srand ( unsigned ( std::time(0) ) ); // Intialize pseudo random sequence...
-//      std::srand ( 13 ); // Intialize pseudo random sequence...
-
+//       std::srand ( unsigned ( std::time(0) ) ); // Intialize pseudo random sequence...
+      std::srand ( 13 ); // Intialize pseudo random sequence...
       Instancia* instancia = new Instancia();
-      instancia->readFile("graphs/eil51.tsp");
-      instancia->calc_distances();
-
       Scatter* scatter = new Scatter();
+      std::string dirname("./graphs/EUC_2D/");
+
+      DIR* dir = opendir(dirname.c_str());
+      if (dir == NULL) {
+            std::cout << "Error open dir : " << strerror(errno) << '\n';
+            return 1;
+      }
+      struct dirent* _dirent;
+      while ((_dirent = readdir(dir)) != NULL) {
+            if (strcmp(_dirent->d_name, ".") == 0 && strcmp(_dirent->d_name, "..") == 0) {
+                  continue;
+            }
+
+            char path[MAX_PATH];
+
+            sprintf(path, "%s", "./graphs/EUC_2D/pr107.tsp");
+//            strcat(path, _dirent->d_name);
+            std::cout << path << '\n';
+
+//            time_t before = time(0);
+//            time_t after = time(0);
+
+//            std::cout << "Time : " << after - before << '\n';
+
+            std::cout << _dirent->d_name << '\n';
+//            delete solucion;
+      }
+
+      instancia->readFile("./graphs/EUC_2D/pr107.tsp");
+      instancia->calc_distances();
+      instancia->print_distances();
+
       Solucion* solucion = scatter->construction(instancia);
+      std::cout << "Solucion : " << *solucion << '\n';
 
-      std::cout << "Eval route : " << solucion->eval() << '\n';
-      solucion->print_route();
-
-      delete solucion;
       delete instancia;
       delete scatter;
+
       return 0;
 }
 
