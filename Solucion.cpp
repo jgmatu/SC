@@ -45,22 +45,17 @@ Solucion::exist(int idNode) {
       return false;
 }
 
-float
+double
 Solucion::eval() const {
-      float total = 0;
+      double total = 0;
 
       for (int i = 0; i < length; i++) {
             int first = i % length;
             int second = (i + 1) % length;
-            float distance = instancia->get_distance(route[first], route[second]);;
-
-            std::cout << distance << ',';
+            double distance = instancia->get_distance(route[first], route[second]);;
 
             total += distance;
       }
-      std::cout << "--------------------------------------" << '\n';
-      std::cout << "Total : " << total << '\n';
-      std::cout << "--------------------------------------" << '\n';
       return total;
 }
 
@@ -94,26 +89,10 @@ Solucion::insert(int idxPosition, int idxInsert) {
       route.insert(it + idxInsert, aux);
 }
 
-int
-Solucion::getNextMin(int idx) {
-      float dist = instancia->get_distance(idx, (idx + 1) % length);
-      int aux = idx;
 
-      for (int i = 1; i < length; i++) {
-            float nextDist = instancia->get_distance(aux, (aux + 1) % length);
-
-            if (nextDist < dist) {
-                  return aux;
-            }
-            aux = (idx + i) % length;
-      }
-      return -1; // No deberia entrar nunca....
-}
-
-
-float
+double
 Solucion::diverse_distance(Solucion* sol) {
-      float total = 0;
+      double total = 0;
 
       for (int i = 0; i < sol->size(); i++) {
             if (sol->route[i] != this->route[i]) {
@@ -194,6 +173,7 @@ Solucion::vote(Solucion* sol) const {
 }
 
 std::ostream& operator<<(std::ostream& os, const Solucion& sol) {
+      os.precision(5);
       os << sol.eval();
       for (int i = 0; i < sol.length; i++) {
             os << sol.route[i] << ' ';

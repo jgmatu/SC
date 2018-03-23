@@ -41,26 +41,24 @@ int main() {
             }
 
             char path[MAX_PATH];
-
-            sprintf(path, "%s", "./graphs/EUC_2D/pr107.tsp");
-//            strcat(path, _dirent->d_name);
+            sprintf(path, "%s", dirname.c_str());
+            strcat(path, _dirent->d_name);
             std::cout << path << '\n';
+            time_t before = time(0);
 
-//            time_t before = time(0);
-//            time_t after = time(0);
+            instancia->readFile("./graphs/EUC_2D/pr107.tsp");
+            instancia->calc_distances();
+            instancia->print_distances();
 
-//            std::cout << "Time : " << after - before << '\n';
+            Solucion* solucion = scatter->construction(instancia);
+
+            time_t after = time(0);
+
+            std::cout << "Time : " << after - before << '\n';
 
             std::cout << _dirent->d_name << '\n';
-//            delete solucion;
+            delete solucion;
       }
-
-      instancia->readFile("./graphs/EUC_2D/pr107.tsp");
-      instancia->calc_distances();
-      instancia->print_distances();
-
-      Solucion* solucion = scatter->construction(instancia);
-      std::cout << "Solucion : " << *solucion << '\n';
 
       delete instancia;
       delete scatter;

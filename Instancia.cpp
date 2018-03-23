@@ -5,12 +5,12 @@ Instancia::Instancia() {
 }
 
 Instancia::~Instancia() {
-      for (std::map<int, std::map<int, float>>::iterator it = distances.begin(); it != distances.end(); it++) {
+      for (std::map<int, std::map<int, double>>::iterator it = distances.begin(); it != distances.end(); it++) {
             it->second.clear();
       }
       distances.clear();
 
-      for (std::vector<std::vector<float>>::iterator it = graph.begin(); it != graph.end(); it++) {
+      for (std::vector<std::vector<double>>::iterator it = graph.begin(); it != graph.end(); it++) {
             it->clear();
       }
       graph.clear();
@@ -37,12 +37,12 @@ Instancia::is_valid_vertex(const std::string& line) {
       return line.compare("EOF") != 0 && line.compare("") != 0;
 }
 
-std::vector<float>
+std::vector<double>
 Instancia::get_vertex(const std::string& line) {
       std::istringstream iss(line);
       std::vector<std::string> results(std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>());
 
-      std::vector<float> values;
+      std::vector<double> values;
       for (std::vector<std::string>::const_iterator it = results.begin(); it != results.end(); it++) {
             values.push_back(std::stof(*it));
       }
@@ -53,11 +53,11 @@ void
 Instancia::calc_distances() {
       int n = 0;
 
-      for (std::vector<std::vector<float>>::const_iterator it = graph.begin(); it != graph.end(); it++, n++) {
-            std::map<int, float> distances_node;
+      for (std::vector<std::vector<double>>::const_iterator it = graph.begin(); it != graph.end(); it++, n++) {
+            std::map<int, double> distances_node;
             int m = 0;
 
-            for (std::vector<std::vector<float>>::const_iterator itJ = graph.begin(); itJ != graph.end(); itJ++, m++) {
+            for (std::vector<std::vector<double>>::const_iterator itJ = graph.begin(); itJ != graph.end(); itJ++, m++) {
                   if (it != itJ) {
                         distances_node[m] = sqrt(pow((*itJ)[1] - (*it)[1], 2) + pow((*itJ)[2] - (*it)[2], 2));
                   }
@@ -68,9 +68,9 @@ Instancia::calc_distances() {
 
 void
 Instancia::print_distances() {
-      for (std::map<int, std::map<int, float>>::const_iterator it = distances.begin(); it != distances.end(); it++) {
+      for (std::map<int, std::map<int, double>>::const_iterator it = distances.begin(); it != distances.end(); it++) {
             std::cout <<  "Node : " << it->first << std::endl;
-            for (std::map<int, float>::const_iterator itJ = it->second.begin(); itJ != it->second.end(); itJ++) {
+            for (std::map<int, double>::const_iterator itJ = it->second.begin(); itJ != it->second.end(); itJ++) {
                   std::cout << "\t" << itJ->first << " :" << itJ->second << std::endl;
             }
       }
@@ -78,8 +78,8 @@ Instancia::print_distances() {
 
 void
 Instancia::print_graph() {
-      for (std::vector<std::vector<float>>::const_iterator itI = graph.begin(); itI != graph.end(); itI++) {
-            for (std::vector<float>::const_iterator itJ = itI->begin(); itJ != itI->end(); itJ++) {
+      for (std::vector<std::vector<double>>::const_iterator itI = graph.begin(); itI != graph.end(); itI++) {
+            for (std::vector<double>::const_iterator itJ = itI->begin(); itJ != itI->end(); itJ++) {
                   std::cout << *itJ << " ";
             }
             std::cout << std::endl;
@@ -87,12 +87,12 @@ Instancia::print_graph() {
 }
 
 
-float
+double
 Instancia::get_distance(int first, int second) {
       return distances[first][second];
 }
 
-std::map<int, float>
+std::map<int, double>
 Instancia::get_column(int idNode) {
       return distances[idNode];
 }

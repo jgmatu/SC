@@ -122,14 +122,8 @@ Scatter::construction(Instancia* inst) {
       ExperimentSearch* search = new ExperimentSearch();
       int numChanged = -1;
 
-/*
       set_best_solutions(initials, refSet);
       set_diverses_solutions(initials, refSet);
-
-      for (unsigned int i = 0; i < initials.size(); i++) {
-            std::cout << initials[i]->eval() << ' ';
-      }
-      std::cout << '\n';
 
       int count = 0;
       do {
@@ -144,13 +138,13 @@ Scatter::construction(Instancia* inst) {
                         bool changed = change_refset(refSet, voted);
                         if (changed) {
                               numChanged++;
-//                              std::cout << voted->eval() << ' ' << count << '\n';
+                              std::cout.precision(5);
+                              std::cout << voted->eval() << ' ' << count << '\n';
                         }
                         count++;
                   }
             }
       } while (numChanged > 0);
       delete search;
-*/
       return refSet[0];
 }
