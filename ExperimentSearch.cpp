@@ -34,7 +34,7 @@ ExperimentSearch::search(Solucion* solucion) {
                         float eval = solucion->eval();
 
                         solucion->swap(indexesI[i], indexesJ[j]);
-                        if (solucion->eval() >= eval) {
+                        if (solucion->eval() > eval || fabs(solucion->eval() - eval) < 0.01) {
                               solucion->swap(indexesJ[j], indexesI[i]);
                         } else {
                               improve = true;

@@ -125,7 +125,6 @@ Scatter::construction(Instancia* inst) {
       set_best_solutions(initials, refSet);
       set_diverses_solutions(initials, refSet);
 
-      int count = 0;
       do {
             numChanged = 0;
             for (unsigned int i = 0; i < refSet.size(); ++i) {
@@ -138,10 +137,7 @@ Scatter::construction(Instancia* inst) {
                         bool changed = change_refset(refSet, voted);
                         if (changed) {
                               numChanged++;
-                              std::cout.precision(5);
-                              std::cout << voted->eval() << ' ' << count << '\n';
                         }
-                        count++;
                   }
             }
       } while (numChanged > 0);
