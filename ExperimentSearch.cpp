@@ -28,19 +28,21 @@ ExperimentSearch::search(Solucion* solucion) {
       do {
             improve = false;
             std::random_shuffle(indexesI.begin(), indexesI.end());
-            for (int i = 0; i < solucion->size() / 2 && !improve; ++i) {
+            for (int i = 0; i < solucion->size() / 10 && !improve; ++i) {
                   std::random_shuffle(indexesJ.begin(), indexesJ.end());
-                  for (int j = i + 1; j < solucion->size() / 2 && !improve; ++j) {
-                        float eval = solucion->eval();
+                  for (int j = i + 1; j < solucion->size() / 10 && !improve; ++j) {
+                        double eval = solucion->eval();
+                        int a = indexesI[i];
+                        int b = indexesJ[j];
 
-                        solucion->swap(indexesI[i], indexesJ[j]);
-                        if (solucion->eval() > eval || fabs(solucion->eval() - eval) < 0.01) {
-                              solucion->swap(indexesJ[j], indexesI[i]);
+                        solucion->swap(a, b);
+                        if (solucion->eval() > eval || fabs(solucion->eval() - eval) < 0.001) {
+                              solucion->swap(b, a);
                         } else {
                               improve = true;
                         }
                   }
             }
       } while (improve);
-      // std::cout << solucion->eval() << '\n';
+      std::cout << "End local Search : " << solucion->eval() << '\n';
 }

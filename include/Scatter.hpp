@@ -18,6 +18,7 @@ public:
       ~Scatter();
 
       Solucion* construction(Instancia* i);
+      friend std::ostream& operator<<(std::ostream& os, const Scatter& scatter);
 
 private:
 
@@ -26,16 +27,15 @@ private:
       const int NUM_BEST = 5;
       const int NUM_DIVERSE = 5;
 
-      std::vector<Solucion*> get_initial_solutions(Instancia* inst);
-      Instancia* instancia;
       std::vector<Solucion*> refSet_;
 
-      void set_best_solutions(std::vector<Solucion*>& initials, std::vector<Solucion*>& refSet);
-      void set_diverses_solutions(std::vector<Solucion*>& initial, std::vector<Solucion*>& refSet);
+      std::vector<Solucion*> get_initial_solutions(Instancia* inst);
+      void set_best_solutions(std::vector<Solucion*>& initials);
+      void set_diverses_solutions(std::vector<Solucion*>& initial);
       double get_distance(Solucion* initial, Solucion* best);
       Solucion* get_vote(Solucion* sol1, Solucion* sol2);
-      bool change_refset(std::vector<Solucion*>& refSet, Solucion* solution);
-      float avg(std::vector<Solucion*> refSet);
+      bool change_refset(Solucion* solution);
+      float avg();
 
 };
 
