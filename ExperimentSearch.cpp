@@ -46,3 +46,6 @@ ExperimentSearch::search(Solucion* solucion) {
       } while (improve);
       std::cout << "End local Search : " << solucion->eval() << '\n';
 }
+
+
+// 259269 277832 278395 278407 283227 285521 287415 293494 294294 295191 

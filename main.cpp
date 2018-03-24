@@ -51,8 +51,9 @@ int main() {
             time_t before = time(0);
             Solucion* solucion = scatter->construction(instancia);
             time_t after = time(0);
+            
             std::cout << "Time : " << after - before << '\n';
-
+            std::cout << "Sol val : " << solucion->eval() << '\n';
             std::cout << _dirent->d_name << '\n';
             delete solucion;
       }
