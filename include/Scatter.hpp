@@ -35,7 +35,7 @@ private:
       double get_distance(Solucion* initial, Solucion* best);
       Solucion* get_vote(Solucion* sol1, Solucion* sol2);
       bool change_refset(Solucion* solution);
-      float avg();
+      double avg();
 
 };
 

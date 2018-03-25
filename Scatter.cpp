@@ -76,14 +76,14 @@ Scatter::set_best_solutions(std::vector<Solucion*>& initials) {
 void
 Scatter::set_diverses_solutions(std::vector<Solucion*>& initials) {
       for (int i = 0; i < NUM_DIVERSE; ++i) {
-            float max = FLT_MIN;
+            double max = FLT_MIN;
             int idx = -1;
 
             for (unsigned int j = 0; j < initials.size(); ++j) {
-                  float min = FLT_MAX;
+                  double min = FLT_MAX;
 
                   for (unsigned int k = 0; k < this->refSet_.size(); ++k) {
-                        float distance = initials[j]->diverse_distance(this->refSet_[k]);
+                        double distance = initials[j]->diverse_distance(this->refSet_[k]);
 
                         if (distance < min) {
                               min = distance;
@@ -103,18 +103,19 @@ Scatter::set_diverses_solutions(std::vector<Solucion*>& initials) {
 
 bool
 Scatter::change_refset(Solucion* solution) {
-      float mean = this->avg();
+      double mean = this->avg();
+      double eval = solution->eval();
+
       if (solution->eval() > mean) {
             return false;
       }
 
-      float eval = solution->eval();
-      float min = FLT_MAX;
+      double min = FLT_MAX;
       int idx = -1;
       bool changed = false;
 
       for (unsigned int i = 0; i < this->refSet_.size(); i++) {
-            float dist = this->refSet_[i]->diverse_distance(solution);
+            double dist = this->refSet_[i]->diverse_distance(solution);
 
             if (this->refSet_[i]->eval() > mean && eval < this->refSet_[i]->eval()) {
                   delete this->refSet_[i];
@@ -143,9 +144,9 @@ Scatter::change_refset(Solucion* solution) {
       return changed;
 }
 
-float
+double
 Scatter::avg() {
-      float total = 0;
+      double total = 0;
 
       for (unsigned int i = 0; i < this->refSet_.size(); ++i) {
             total += this->refSet_[i]->eval();
