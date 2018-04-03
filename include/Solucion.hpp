@@ -22,7 +22,7 @@ public:
 
       void add(int idNode, int idx);
       void remove(int idx);
-      double eval() const;
+      double eval();
       bool exist(int idNode);
       void insert(int idNode, int idx);
       void swap(int idNodeA, int idNodeB);
@@ -30,6 +30,9 @@ public:
       Solucion* vote(Solucion* sol) const;
       double diverse_distance(Solucion* sol);
       Solucion* copy();
+
+      double getActualEval() const { return this->eval_; };
+      double getDistanceNeighboors(int id);
 
       friend std::ostream& operator<<(std::ostream& os, const Solucion& sol);
 
@@ -44,6 +47,7 @@ private:
       Instancia* instancia;
       std::vector<int> route;
       int length;
+      double eval_;
 
       const int COIN_FACES = 2;
       const int FACE = 1;

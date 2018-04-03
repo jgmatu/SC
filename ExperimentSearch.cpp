@@ -16,6 +16,7 @@ ExperimentSearch::get_indexes(int size) {
       for (unsigned int i = 0; i < indexes.size(); i++) {
             indexes[i] = i;
       }
+      std::random_shuffle(indexes.begin(), indexes.end());
       return indexes;
 }
 
@@ -25,18 +26,21 @@ ExperimentSearch::search(Solucion* solucion) {
       std::vector<int> indexesJ = get_indexes(solucion->size());
       bool improve;
 
+      int size = solucion->size() / 10;
       do {
             improve = false;
-            std::random_shuffle(indexesI.begin(), indexesI.end());
-            for (int i = 0; i < solucion->size() / 10 && !improve; ++i) {
-                  std::random_shuffle(indexesJ.begin(), indexesJ.end());
-                  for (int j = i + 1; j < solucion->size() / 10 && !improve; ++j) {
-                        double eval = solucion->eval();
+            for (int i = 0; i < size && !improve; ++i) {
+                  for (int j = i + 1; j < size && !improve; ++j) {
+                        double eval = solucion->getActualEval();
                         int a = indexesI[i];
                         int b = indexesJ[j];
 
+                        // Se puede actualizar de otra manera?, Es un único
+                        // cambio...
                         solucion->swap(a, b);
-                        if (solucion->eval() > eval || fabs(solucion->eval() - eval) < 0.001) {
+                        double newEval = solucion->getActualEval();
+
+                        if (newEval > eval || fabs(newEval - eval) < 0.001) {
                               solucion->swap(b, a);
                         } else {
                               improve = true;
@@ -44,8 +48,8 @@ ExperimentSearch::search(Solucion* solucion) {
                   }
             }
       } while (improve);
-      std::cout << "End local Search : " << solucion->eval() << '\n';
+      std::cout << "End local Search : " << solucion->getActualEval() << '\n';
 }
 
 
-// 259269 277832 278395 278407 283227 285521 287415 293494 294294 295191 
+// 259269 277832 278395 278407 283227 285521 287415 293494 294294 295191

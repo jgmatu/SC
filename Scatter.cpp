@@ -44,7 +44,7 @@ Scatter::construction(Instancia* inst) {
 }
 
 bool solution_sort_criteria(Solucion* sol1, Solucion* sol2) {
-      return sol1->eval() < sol2->eval();
+      return sol1->getActualEval() < sol2->getActualEval(); 
 }
 
 std::vector<Solucion*>
@@ -54,6 +54,7 @@ Scatter::get_initial_solutions(Instancia* instance) {
 
       for (int i = 0; i < NUM_INITIAL; ++i) {
             solutions[i] = random->construction(instance);
+            solutions[i]->eval();
       }
       std::sort(solutions.begin(), solutions.end(), solution_sort_criteria);
 
@@ -94,6 +95,7 @@ Scatter::set_diverses_solutions(std::vector<Solucion*>& initials) {
                         max = min;
                   }
             }
+
             if (idx != -1) {
                   this->refSet_.insert(this->refSet_.end(), initials[idx]);
                   initials.erase(initials.begin() + idx);
@@ -104,44 +106,24 @@ Scatter::set_diverses_solutions(std::vector<Solucion*>& initials) {
 bool
 Scatter::change_refset(Solucion* solution) {
       double mean = this->avg();
-      double eval = solution->eval();
+      double eval = solution->getActualEval();
 
-      if (solution->eval() > mean) {
+      if (solution->getActualEval() > mean) {
             return false;
       }
 
-      double min = FLT_MAX;
-      int idx = -1;
-      bool changed = false;
-
       for (unsigned int i = 0; i < this->refSet_.size(); i++) {
-            double dist = this->refSet_[i]->diverse_distance(solution);
-
-            if (this->refSet_[i]->eval() > mean && eval < this->refSet_[i]->eval()) {
+            if (this->refSet_[i]->getActualEval() > mean && eval < this->refSet_[i]->getActualEval()) {
+                  // Cambio en el refset si y solo sí el que estoy examinando tiene un
+                  // valor mayor que la media y la evaluación de la solución actual
+                  // es menor que la que estoy examinando...
                   delete this->refSet_[i];
                   this->refSet_[i] = solution;
                   std::sort(this->refSet_.begin(), this->refSet_.end(), solution_sort_criteria);
                   return true;
             }
-
-            if (dist < min) {
-                  if (eval < this->refSet_[i]->eval()) {
-                        min = dist;
-                        idx = i;
-                  }
-            }
       }
-
-      if (idx != -1) {
-            delete this->refSet_[idx];
-            this->refSet_[idx] = solution;
-            changed = true;
-      } else {
-            delete solution;
-      }
-      solution = NULL;
-      std::sort(this->refSet_.begin(), this->refSet_.end(), solution_sort_criteria);
-      return changed;
+      return false;
 }
 
 double
@@ -149,7 +131,7 @@ Scatter::avg() {
       double total = 0;
 
       for (unsigned int i = 0; i < this->refSet_.size(); ++i) {
-            total += this->refSet_[i]->eval();
+            total += this->refSet_[i]->getActualEval();
       }
       return total / this->refSet_.size();
 }
@@ -158,7 +140,7 @@ Scatter::avg() {
 std::ostream& operator<<(std::ostream& os, const Scatter& scatter) {
       os << "Refset state evals : " << std::endl;
       for (int i = 0; i < scatter.NUM_REFSET; ++i) {
-            os << scatter.refSet_[i]->eval() << ' ';
+            os << scatter.refSet_[i]->getActualEval() << ' ';
       }
       os << std::endl;
       return os;

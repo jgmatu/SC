@@ -8,6 +8,7 @@ Solucion::Solucion(Instancia* inst) {
       for (int i = 1 ; i < length; i++) {
             route[i] = -1;
       }
+      eval_ = 0;
 }
 
 Solucion::~Solucion() {
@@ -46,7 +47,7 @@ Solucion::exist(int idNode) {
 }
 
 double
-Solucion::eval() const {
+Solucion::eval() {
       double total = 0;
 
       for (int i = 0; i < length; i++) {
@@ -56,6 +57,7 @@ Solucion::eval() const {
 
             total += distance;
       }
+      this->eval_ = total;
       return total;
 }
 
@@ -64,16 +66,31 @@ Solucion::is_out_range(int idx) {
       return idx <= 0 || idx >= length;
 }
 
+double
+Solucion::getDistanceNeighboors(int id) {
+      int first = id - 1;
+      if (id == 0) {
+            first = length - 1;
+      }
+      int second = (id + 1) % length;
+      return instancia->get_distance(route[first], route[id]) + instancia->get_distance(route[second], route[id]);
+}
+
 void
 Solucion::swap(int idA, int idB) {
       if (is_out_range(idA) || is_out_range(idB)) {
             return;
       }
+      double auxEval = this->eval_;
+      auxEval = auxEval - getDistanceNeighboors(idA) - getDistanceNeighboors(idB);
 
       int aux;
       aux = route[idA];
       route[idA] = route[idB];
       route[idB] = aux;
+
+      auxEval = auxEval + getDistanceNeighboors(idA) + getDistanceNeighboors(idB);
+      this->eval_ = auxEval;
 }
 
 void
@@ -81,12 +98,12 @@ Solucion::insert(int idxPosition, int idxInsert) {
       if (is_out_range(idxPosition) || is_out_range(idxInsert)) {
             return;
       }
-
       std::vector<int>::iterator it = route.begin();
       int aux = route[idxPosition];
 
       route.erase(it + idxPosition);
       route.insert(it + idxInsert, aux);
+      this->eval_ = this->eval();
 }
 
 
@@ -169,12 +186,13 @@ Solucion::vote(Solucion* sol) const {
                   }
             }
       }
+      voted->eval();
       return voted;
 }
 
 std::ostream& operator<<(std::ostream& os, const Solucion& sol) {
       os.precision(5);
-      os << sol.eval();
+      os << sol.getActualEval();
       for (int i = 0; i < sol.length; i++) {
             os << sol.route[i] << ' ';
       }
