@@ -50,7 +50,6 @@ isregfile(char *file)
 int main() {
 //       std::srand ( unsigned ( std::time(0) ) ); // Intialize pseudo random sequence...
       std::srand ( 13 ); // Intialize pseudo random sequence...
-      Instancia* instancia = new Instancia();
       Scatter* scatter = new Scatter();
       std::string dirname("./graphs/EUC_2D/");
 
@@ -61,6 +60,7 @@ int main() {
       }
       struct dirent* _dirent;
       while ((_dirent = readdir(dir)) != NULL) {
+
             if (strcmp(_dirent->d_name, ".") == 0 && strcmp(_dirent->d_name, "..") == 0) {
                   // Father and this are not considered....
                   continue;
@@ -72,7 +72,7 @@ int main() {
             if (!isregfile(path)) {
                   continue;
             }
-
+		Instancia* instancia = new Instancia();
             instancia->readFile(path);
             instancia->calc_distances();
 
@@ -84,10 +84,9 @@ int main() {
             std::cout << "Time : " << after - before << '\n';
             std::cout << "Sol val : " << solucion->getActualEval() << '\n';
             std::cout << _dirent->d_name << '\n';
+		delete instancia;
             delete solucion;
       }
-
-      delete instancia;
       delete scatter;
       return 0;
 }

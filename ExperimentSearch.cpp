@@ -26,7 +26,7 @@ ExperimentSearch::search(Solucion* solucion) {
       std::vector<int> indexesJ = get_indexes(solucion->size());
       bool improve = false;
 
-      int size = solucion->size() / 10;
+      int size = solucion->size();
 
       do {
             improve = false;
