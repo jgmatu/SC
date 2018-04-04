@@ -192,9 +192,9 @@ Solucion::vote(Solucion* sol) const {
 
 std::ostream& operator<<(std::ostream& os, const Solucion& sol) {
       os.precision(5);
-      os << sol.getActualEval();
+      os << sol.getActualEval() << ',';
       for (int i = 0; i < sol.length; i++) {
-            os << sol.route[i] << ' ';
+            os << sol.route[i] << ',';
       }
       return os;
 }

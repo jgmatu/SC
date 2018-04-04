@@ -33,7 +33,6 @@ Scatter::construction(Instancia* inst) {
                         search->search(voted);
                         bool changed = change_refset(voted);
                         if (changed) {
-                              std::cout << *this << '\n';
                               numChanged++;
                         } else {
                               delete voted;

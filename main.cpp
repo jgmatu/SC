@@ -24,6 +24,11 @@
 
 #define MAX_PATH 255
 
+// Directorio con todos los ficheros tsp con formato EUC_2D
+// si alguno de los ficheros no tiene formato EUC_2D el Resultado
+// es inesperado...
+const char* DIRNAME = "./graphs/EUC_2D/";
+
 
 /**
  * función que coprueba si el fichero es un fichero regular es decir un fichero
@@ -46,44 +51,51 @@ isregfile(char *file)
 	}
 }
 
-// Recorrerse el directorio de ficheros tsp.
-int main() {
-//       std::srand ( unsigned ( std::time(0) ) ); // Intialize pseudo random sequence...
-      std::srand ( 13 ); // Intialize pseudo random sequence...
-      Scatter* scatter = new Scatter();
-      std::string dirname("./graphs/EUC_2D/");
+void set_path(char* path, char* filename)
+{
+	sprintf(path, "%s", DIRNAME);
+	strcat(path, filename);
+}
 
-      DIR* dir = opendir(dirname.c_str());
+// Recorrerse el directorio de
+// ficheros tsp con los diferentes problemas.
+// de resolución metaheurística...
+int main() {
+      std::srand ( unsigned ( std::time(0) ) ); // Intialize pseudo random sequence...
+      Scatter* scatter = new Scatter();
+
+      DIR* dir = opendir(DIRNAME);
       if (dir == NULL) {
             std::cout << "Error open dir : " << strerror(errno) << '\n';
             return 1;
       }
+
       struct dirent* _dirent;
       while ((_dirent = readdir(dir)) != NULL) {
-
             if (strcmp(_dirent->d_name, ".") == 0 && strcmp(_dirent->d_name, "..") == 0) {
                   // Father and this are not considered....
                   continue;
             }
             char path[MAX_PATH];
-            sprintf(path, "%s", dirname.c_str());
-            strcat(path, _dirent->d_name);
-
+		set_path(path, _dirent->d_name);
             if (!isregfile(path)) {
+			// Recursives directoryies
+			// are not considered...
                   continue;
             }
-		Instancia* instancia = new Instancia();
+
+		Instancia *instancia = new Instancia();
             instancia->readFile(path);
             instancia->calc_distances();
 
-            std::cout << path << '\n';
             time_t before = time(0);
             Solucion* solucion = scatter->construction(instancia);
             time_t after = time(0);
 
-            std::cout << "Time : " << after - before << '\n';
-            std::cout << "Sol val : " << solucion->getActualEval() << '\n';
-            std::cout << _dirent->d_name << '\n';
+            std::cout << _dirent->d_name << ',';
+		std::cout << after - before << ',';
+		std::cout << *solucion << '\n';
+
 		delete instancia;
             delete solucion;
       }

@@ -25,9 +25,8 @@ ExperimentSearch::search(Solucion* solucion) {
       std::vector<int> indexesI = get_indexes(solucion->size());
       std::vector<int> indexesJ = get_indexes(solucion->size());
       bool improve = false;
-
       int size = solucion->size();
-
+      
       do {
             improve = false;
             for (int i = 0; i < size && !improve; ++i) {
@@ -40,7 +39,6 @@ ExperimentSearch::search(Solucion* solucion) {
                         // cambio...
                         solucion->swap(a, b);
                         double newEval = solucion->getActualEval();
-
                         if (newEval > eval || fabs(newEval - eval) < 0.001) {
                               solucion->swap(b, a);
                         } else {
@@ -49,7 +47,6 @@ ExperimentSearch::search(Solucion* solucion) {
                   }
             }
       } while (improve);
-      std::cout << "End local Search : " << solucion->getActualEval() << '\n';
 }
 
 
