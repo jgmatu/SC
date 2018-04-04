@@ -35,6 +35,8 @@ Scatter::construction(Instancia* inst) {
                         if (changed) {
                               std::cout << *this << '\n';
                               numChanged++;
+                        } else {
+                              delete voted;
                         }
                   }
             }
@@ -44,7 +46,7 @@ Scatter::construction(Instancia* inst) {
 }
 
 bool solution_sort_criteria(Solucion* sol1, Solucion* sol2) {
-      return sol1->getActualEval() < sol2->getActualEval(); 
+      return sol1->getActualEval() < sol2->getActualEval();
 }
 
 std::vector<Solucion*>

@@ -5,21 +5,46 @@
 #include <vector>
 #include <map>
 #include <iterator>
-#include <math.h>
 #include <random>
 #include <ctime>
+
+#include <math.h>
 #include <dirent.h>
 #include <sys/types.h>
-
-
-#include "Instancia.hpp"
-#include "Solucion.hpp"
-#include "Scatter.hpp"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <time.h>
 #include <string.h>
 #include <errno.h>
 
+#include "Instancia.hpp"
+#include "Solucion.hpp"
+#include "Scatter.hpp"
+
 #define MAX_PATH 255
+
+
+/**
+ * función que coprueba si el fichero es un fichero regular es decir un fichero
+ * de texto que pueda ser abierto para lectura de datos.
+ */
+int
+isregfile(char *file)
+{
+	struct stat sb;
+
+	if (stat(file , &sb) < 0) {
+		fprintf(stderr, "Error stat file... %s error... %s\n" , file , strerror(errno));
+            exit(1);
+	}
+	switch (sb.st_mode & S_IFMT) {
+	case S_IFREG:
+		return 1;
+	default:
+		return 0;
+	}
+}
 
 // Recorrerse el directorio de ficheros tsp.
 int main() {
@@ -37,12 +62,16 @@ int main() {
       struct dirent* _dirent;
       while ((_dirent = readdir(dir)) != NULL) {
             if (strcmp(_dirent->d_name, ".") == 0 && strcmp(_dirent->d_name, "..") == 0) {
+                  // Father and this are not considered....
                   continue;
             }
-
             char path[MAX_PATH];
             sprintf(path, "%s", dirname.c_str());
             strcat(path, _dirent->d_name);
+
+            if (!isregfile(path)) {
+                  continue;
+            }
 
             instancia->readFile(path);
             instancia->calc_distances();
