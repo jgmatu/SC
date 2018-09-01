@@ -41,7 +41,7 @@ isregfile(char *file)
 
 	if (stat(file , &sb) < 0) {
 		fprintf(stderr, "Error stat file... %s error... %s\n" , file , strerror(errno));
-            exit(1);
+		exit(1);
 	}
 	switch (sb.st_mode & S_IFMT) {
 	case S_IFREG:
@@ -61,46 +61,46 @@ void set_path(char* path, char* filename)
 // ficheros tsp con los diferentes problemas.
 // de resolución metaheurística...
 int main() {
-      std::srand ( unsigned ( std::time(0) ) ); // Intialize pseudo random sequence...
-      Scatter* scatter = new Scatter();
+	std::srand ( unsigned ( std::time(0) ) ); // Intialize pseudo random sequence...
+	Scatter* scatter = new Scatter();
 
-      DIR* dir = opendir(DIRNAME);
-      if (dir == NULL) {
-            std::cout << "Error open dir : " << strerror(errno) << '\n';
-            return 1;
-      }
+	DIR* dir = opendir(DIRNAME);
+	if (!dir) {
+		std::cout << "Error open dir : " << strerror(errno) << '\n';
+		return 1;
+	}
 
-      struct dirent* _dirent;
-      while ((_dirent = readdir(dir)) != NULL) {
-            if (strcmp(_dirent->d_name, ".") == 0 && strcmp(_dirent->d_name, "..") == 0) {
-                  // Father and this are not considered....
-                  continue;
-            }
-            char path[MAX_PATH];
+	struct dirent* _dirent;
+	while ((_dirent = readdir(dir)) != NULL) {
+		if (strcmp(_dirent->d_name, ".") == 0 && strcmp(_dirent->d_name, "..") == 0) {
+			// Father and this are not considered....
+			continue;
+		}
+		char path[MAX_PATH];
 		set_path(path, _dirent->d_name);
-            if (!isregfile(path)) {
+		if (!isregfile(path)) {
 			// Recursives directoryies
 			// are not considered...
-                  continue;
-            }
+			continue;
+		}
 
 		Instancia *instancia = new Instancia();
-            instancia->readFile(path);
-            instancia->calc_distances();
+		instancia->readFile(path);
+		instancia->calc_distances();
 
-            time_t before = time(0);
-            Solucion* solucion = scatter->construction(instancia);
-            time_t after = time(0);
+		time_t before = time(0);
+		Solucion* solucion = scatter->construction(instancia);
+		time_t after = time(0);
 
-            std::cout << _dirent->d_name << ',';
+		std::cout << _dirent->d_name << ',';
 		std::cout << after - before << ',';
 		std::cout << *solucion << '\n';
 
 		delete instancia;
-            delete solucion;
-      }
-      delete scatter;
-      return 0;
+		delete solucion;
+	}
+	delete scatter;
+	return 0;
 }
 
 // Clase instancia.
@@ -136,8 +136,6 @@ int main() {
 // La base...
 
 // Cada solución tiene una referencia a la instancia para la cual es solución...
-
-
 
 // Constructivos, búsquedas locales y perturbaciones.
 
